@@ -56,7 +56,8 @@ int main(int argc, char **argv) {
     /* get attributes form queue */
     struct mq_attr attribute = get_message_queue_attribute(server_message_queue_descriptor);
     printf("name: %s descriptor: %d flags: %ld max_messages: %ld message_size: %ld current_message: %ld\n",
-           server_message_queue_name, server_message_queue_descriptor, attribute.mq_flags, attribute.mq_maxmsg, attribute.mq_msgsize,
+           server_message_queue_name, server_message_queue_descriptor, attribute.mq_flags, attribute.mq_maxmsg,
+           attribute.mq_msgsize,
            attribute.mq_curmsgs);
 
 
@@ -70,7 +71,7 @@ int main(int argc, char **argv) {
         /* take values from request */
         int client_pid, num_1, num_2;
         char operator;
-        sscanf(request, "%d %d %c %d", &client_pid, &num_1, &operator, &num_2);
+        sscanf(request, "%d %d %c %d", &client_pid, &num_1, &operator, &num_2);//better way?
 
         printf("Received request form %d, request: %d %c %d\n", client_pid, num_1, operator, num_2);
 

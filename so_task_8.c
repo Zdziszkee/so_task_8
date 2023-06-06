@@ -46,8 +46,5 @@ int main(int argc, char **argv) {
                 break;
         }
     }
-
-
-    printf("Hello, World!\n");
     return 0;
 }
