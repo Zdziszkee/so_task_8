@@ -7,28 +7,27 @@
 #include <mqueue.h>
 #include <stddef.h>
 
-#define MQ_NAME "/queue"
 #define MAX_MSG 10
 #define MSG_SIZE 30
 
-/* function to create queue with error handling, return queue's descriptor */
-mqd_t createMq (const char *name, int oflag, mode_t mode, long mq_maxmsg, long mq_msgsize);
+/* function for creating message queues, returns message queue's descriptor */
+mqd_t create_message_queue(const char *name, int flag, mode_t mode, struct mq_attr *attribute);
 
-/* function to open exising queue, return queue's descriptor */
-mqd_t openMq (const char *name, int oflag);
+/* function for opening exising message queue, returns message queue's descriptor */
+mqd_t open_message_queue (const char *name, int flag);
 
-/* function to close queue */
-void closeMq (mqd_t mq_des);
+/* function for closing message queue */
+void close_message_queue (mqd_t mq_des);
 
-/* function to unlink queue */
-void unlinkMq(const char *name);
+/* function for unlinking message queue */
+void unlink_message_queue(const char *name);
 
-/* function to get attributes, return struct */
-struct mq_attr getAttrMq(mqd_t mq_des);
+/* function for getting attributes, return struct */
+struct mq_attr get_message_queue_attribute(mqd_t message_queue_descriptor);
 
-/* function to send messages */
-void sendMq (mqd_t mq_des, const char *msg_ptr, size_t msg_len, unsigned int msg_prio);
+/* function for sending messages through message queue */
+void send_message (mqd_t message_queue_descriptor, const char *message, size_t message_size, unsigned int message_priority);
 
-/* function to receive messages */
-void receiveMq (mqd_t mq_des, char *msg_ptr, size_t msg_len ,unsigned int *msg_prio);
+/* function to receive messages through message queue */
+void receive_message (mqd_t mq_des, char *msg_ptr, size_t msg_len , unsigned int *msg_prio);
 #endif //SO_TASK_8_MESSAGE_QUEUE_H

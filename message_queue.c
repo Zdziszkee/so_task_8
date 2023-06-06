@@ -5,65 +5,65 @@
 #include "message_queue.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <fcntl.h>
-#include <sys/stat.h>
 #include <mqueue.h>
 
 
-mqd_t createMq (const char *name, int oflag, mode_t mode, long mq_maxmsg, long mq_msgsize) {
-    struct mq_attr attr;
-    attr.mq_maxmsg = mq_maxmsg;
-    attr.mq_msgsize = mq_msgsize;
-    mqd_t mqDes = mq_open(name, oflag, mode, &attr);
-    if (mqDes == -1) {
-        perror ("Failed to create queue\n");
-        exit (EXIT_FAILURE);
+mqd_t create_message_queue(const char *name, int flag, mode_t mode, struct mq_attr *attribute) {
+    mqd_t message_queue_descriptor = mq_open(name, flag, mode, &attribute);
+    if (message_queue_descriptor == -1) {
+        perror("Failed to create queue\n");
+        exit(EXIT_FAILURE);
     }
-    return mqDes;
+    return message_queue_descriptor;
 }
 
-mqd_t openMq (const char *name, int oflag) {
-    mqd_t mqDes = mq_open(name, oflag);
-    if (mqDes == -1) {
-        perror ("Failed to open queue\n");
-        exit (EXIT_FAILURE);
+mqd_t open_message_queue(const char *name, int flag) {
+    mqd_t message_queue_descriptor = mq_open(name, flag);
+    if (message_queue_descriptor == -1) {
+        perror("Failed to open queue\n");
+        exit(EXIT_FAILURE);
     }
-    return mqDes;
+    return message_queue_descriptor;
 }
 
-void sendMq (mqd_t mq_des, const char *msg_ptr, size_t msg_len, unsigned int msg_prio) {
-    if (mq_send(mq_des, msg_ptr, msg_len, msg_prio) == -1) {
-        perror ("Failed to send message\n");
-        exit (EXIT_FAILURE);
-    }
-}
-
-void receiveMq (mqd_t mq_des, char *msg_ptr, size_t msg_len, unsigned int *msg_prio) {
-    if (mq_receive(mq_des, msg_ptr, msg_len, msg_prio) == -1) {
-        perror ("Failed to receive message\n");
-        exit (EXIT_FAILURE);
+void send_message(mqd_t message_queue_descriptor, const char *message, size_t message_size, unsigned int message_priority) {
+    int success = mq_send(message_queue_descriptor, message, message_size, message_priority);
+    if (success == -1) {
+        perror("Failed to send message\n");
+        exit(EXIT_FAILURE);
     }
 }
 
-void closeMq(mqd_t mq_des) {
-    if (mq_close(mq_des) == -1) {
-        perror ("Failed to close queue\n");
-        exit (EXIT_FAILURE);
+void receive_message(mqd_t message_queue_descriptor, char *message, size_t message_size, unsigned int *message_priority) {
+    ssize_t success = mq_receive(message_queue_descriptor, message, message_size, message_priority);
+    if (success == -1) {
+        perror("Failed to receive message\n");
+        exit(EXIT_FAILURE);
     }
 }
 
-void unlinkMq (const char *name) {
-    if (mq_unlink(name) == -1) {
-        perror ("Failed to unlink queue\n");
-        exit (EXIT_FAILURE);
+void close_message_queue(mqd_t message_queue_descriptor) {
+    int success = mq_close(message_queue_descriptor);
+    if (success == -1) {
+        perror("Failed to close queue\n");
+        exit(EXIT_FAILURE);
     }
 }
 
-struct mq_attr getAttrMq(mqd_t mq_des) {
-    struct mq_attr attr;
-    if (mq_getattr(mq_des, &attr) == -1) {
-        perror ("Failed to get attributes\n");
-        exit (EXIT_FAILURE);
+void unlink_message_queue(const char *name) {
+    int success = mq_unlink(name);
+    if (success == -1) {
+        perror("Failed to unlink queue\n");
+        exit(EXIT_FAILURE);
     }
-    return attr;
+}
+
+struct mq_attr get_message_queue_attribute(mqd_t message_queue_descriptor) {
+    struct mq_attr attribute;
+    int success = mq_getattr(message_queue_descriptor, &attribute);
+    if (success == -1) {
+        perror("Failed to get attributes\n");
+        exit(EXIT_FAILURE);
+    }
+    return attribute;
 }
