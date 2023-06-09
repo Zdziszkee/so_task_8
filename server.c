@@ -46,7 +46,8 @@ int main(int argc, char **argv) {
     }
 
     /* create server queue */
-    server_message_queue_descriptor = create_message_queue(server_message_queue_name, O_CREAT | O_EXCL | O_RDONLY, 0666,MAX_MSG,MSG_SIZE);
+    server_message_queue_descriptor = create_message_queue(server_message_queue_name, O_CREAT | O_EXCL | O_RDONLY, 0666,
+                                                           MAX_MSG, MSG_SIZE);
 
     /* get attributes form queue */
     struct mq_attr attribute = get_message_queue_attribute(server_message_queue_descriptor);
@@ -83,6 +84,10 @@ int main(int argc, char **argv) {
                 sprintf(message, "%d", num_1 * num_2);
                 break;
             case '/':
+                if (num_2 == 0) {
+                    sprintf(message, "You can't divide by 0");
+                    break;
+                }
                 sprintf(message, "%d", num_1 / num_2);
                 break;
             default:
