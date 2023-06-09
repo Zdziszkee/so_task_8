@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
-#include <bits/mqueue.h>
 #include "message_queue.h"
 
 //
@@ -37,7 +36,7 @@ int main(int argc, char **argv) {
     /* at the end of file */
     if (atexit(cleanUp) != 0) {
         perror("Atexit error\n");
-        _exit(1);
+        exit(EXIT_FAILURE);
     }
 
     /* in ^C case */
@@ -47,11 +46,7 @@ int main(int argc, char **argv) {
     }
 
     /* create server queue */
-    struct mq_attr message_queue_attributes;
-    message_queue_attributes.mq_maxmsg = MAX_MSG;
-    message_queue_attributes.mq_msgsize = MSG_SIZE;
-    server_message_queue_descriptor = create_message_queue(server_message_queue_name, O_CREAT | O_EXCL | O_RDONLY, 0666,
-                                                           &message_queue_attributes);
+    server_message_queue_descriptor = create_message_queue(server_message_queue_name, O_CREAT | O_EXCL | O_RDONLY, 0666,MAX_MSG,MSG_SIZE);
 
     /* get attributes form queue */
     struct mq_attr attribute = get_message_queue_attribute(server_message_queue_descriptor);
@@ -104,5 +99,4 @@ int main(int argc, char **argv) {
         send_message(client_message_queue_descriptor, message, MSG_SIZE, 1);
         close_message_queue(client_message_queue_descriptor);
     }
-    return 0;
 }

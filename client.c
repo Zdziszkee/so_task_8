@@ -58,6 +58,7 @@ int main(int argc, char **argv) {
     /* create queue name */
     pid_t process_id = getpid();
     sprintf(client_message_queue_name, "/%d", process_id);
+    /* create client queue */
 
     printf("You can only use [+, -, *, /]\n");
 
@@ -78,14 +79,9 @@ int main(int argc, char **argv) {
         send_message(server_message_queue_descriptor, request, MSG_SIZE, 0);
         printf("\nSent request: %s\n", request);
 
-        /* create client queue */
-        struct mq_attr message_queue_attributes;
-        message_queue_attributes.mq_maxmsg =MAX_MSG;
-        message_queue_attributes.mq_msgsize = MSG_SIZE;
-        client_message_queue_descriptor = create_message_queue(client_message_queue_name, O_CREAT | O_EXCL | O_RDONLY,
-                                                               0666, &message_queue_attributes);
 
         /* receive answer from server */
+        client_message_queue_descriptor = create_message_queue(client_message_queue_name, O_CREAT | O_EXCL | O_RDONLY,0666, MAX_MSG,MSG_SIZE);
         receive_message(client_message_queue_descriptor, request, MSG_SIZE, NULL);
         printf("Answer from server: %s\n\n", request);
 

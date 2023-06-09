@@ -8,13 +8,17 @@
 #include <mqueue.h>
 
 
-mqd_t create_message_queue(const char *name, int flag, mode_t mode, struct mq_attr *attribute) {
-    mqd_t message_queue_descriptor = mq_open(name, flag, mode, &attribute);
-    if (message_queue_descriptor == -1) {
-        perror("Failed to create queue\n");
-        exit(EXIT_FAILURE);
+mqd_t create_message_queue(const char *name, int oflag, mode_t mode, long max_msg, long msg_size) {
+    struct mq_attr attr;
+    attr.mq_maxmsg = max_msg;
+    attr.mq_msgsize = msg_size;
+    mqd_t mqDes = mq_open(name, oflag, mode, &attr);
+    if (mqDes == -1) {
+        unlink_message_queue(name);
+        perror ("Failed to create queue\n");
+        exit (EXIT_FAILURE);
     }
-    return message_queue_descriptor;
+    return mqDes;
 }
 
 mqd_t open_message_queue(const char *name, int flag) {
